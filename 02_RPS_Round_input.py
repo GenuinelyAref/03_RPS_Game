@@ -25,5 +25,9 @@ def intcheck(question, low, high):
 
 
 # Main routine
-game_input = intcheck("How many games do you wish to play? (Max 100 games) ", 1, 100)
-print("\x1B[3mNumber of games chosen: {}\x1B[23m".format(game_input))
+
+# Loop input for testing
+keep_going = ""
+while keep_going == "":
+    game_input = intcheck("How many games do you wish to play? (Max 100 games) ", 1, 100)
+    print("\x1B[3mNumber of games chosen: {}\x1B[23m\n".format(game_input))

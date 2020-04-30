@@ -1,14 +1,17 @@
-# RPS Game
+# RPS Game Version 1.1
 
 # To do
-# Combine all components correctly
-# Implement text_decorator function more often
-# Add option to restart game
-# Add thorough comments in the code
+# Add decorated title statement
+# ِ Add introduction/rules in the beginning & scores list
+# Add text colouring to points statement at the end of each round
+# Add different score feedback statements for different game results (first round vs loss vs win/draw)
+# Replace "your score is" with "score for this round" and "total score" statements at the end of each round
+
 
 # Import library(ies)
 import random
 
+# Define variable
 item_chosen = ""
 
 # List of possible game tokens
@@ -45,6 +48,22 @@ def decorate_text(statement, char):
     print(statement)
     print(char*x_variable)
 
+
+# Title
+print(25*"_")
+print("|\033[3;30;46m  Welcome to RPS Game  \033[0m|")
+print(25*"‾")
+
+# Rules/instructions
+print("This is a virtual Rock/Paper/Scissors game. You will choose an item\n"
+      "every turn, and so will the computer(but on random). You will get a\n"
+      "certain number of points based on the result. You can choose to play\n"
+      "again after the last round has finished. \n\n"
+      "\033[1m\x1B[3mScoring System\x1B[23m\n\n"
+      "Win: 3 points\n"
+      "Draw: 1 point\n"
+      "Loss: 0 points\033[0m\n\n"
+      "\033[44;47m Try to beat the ghost score, which is displayed at the end of the game. \033[m Good luck!")
 
 # Option to restart game after finishing all rounds
 keep_going = ""
@@ -136,29 +155,45 @@ while keep_going == "":
         if round_result == "Win":
             win_message = decorate_text("*** \033[44;42m The result of this round is"
                                         " a {} \033[m ***".format(round_result), "*")
+            print("\n\033[0;32mYou earned 3 points\033[m")
         # Loss feedback message
         elif round_result == "Loss":
-            win_message = decorate_text("!!! \033[44;41m The result of this round is"
+            loss_message = decorate_text("!!! \033[44;41m The result of this round is"
                                         " a {} \033[m !!!".format(round_result), "!")
+            print("\n\033[0;31mYou did not earn any points\033[m")
         # Draw feedback message
         else:
-            win_message = decorate_text("=== \033[44;43m The result of this round is"
+            draw_message = decorate_text("=== \033[44;43m The result of this round is"
                                         " a {} \033[m ===".format(round_result), "=")
-        print("\nYour score is:\033[44;47m {} \033[m".format(score))
+            print("\n\033[0;33mYou earned 1 point\033[m")
 
+        # On 1st round show different statement than on other rounds ("score: ..." instead of "your score now is")
+        if ROUND == 1:
+            print("Score: \033[44;47m {} \033[m".format(score))
+        else:
+            # When no points are earned say "Your score is still: ...)
+            if round_result == "Loss":
+                print("Your score is still: \033[44;47m {} \033[m".format(score))
+            # If points have been received update score and display it
+            else:
+                print("Your score now is: \033[44;47m {} \033[m".format(score))
     print("____________________________________________________")
 
     # Manual text decoration - as function would not read some of the text's
     #   contents and therefore malfunction. Inconvenient in terms of storage
     #   space/efficiency of code, but only this exception has been made throughout the code
     # End of game Statistics
+    extra_arrows_value = int((len(str(losses)) + len(str(wins)) + len(str(draws))) - 3)
+    character = "^"
+    extra_arrows_print = (character * extra_arrows_value)
     print("\nGame Statistics:\n")
-    print("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+    print("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{}\n"
           "^^^ Losses: {} | Wins: {} | Draws: {} ^^^\n"
-          "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n".format(losses, wins, draws))
+          "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{}\n"
+          .format(extra_arrows_print, losses, wins, draws, extra_arrows_print))
 
     # Average Ghost score is the # of points that the user would receive having had an equal # of wins/losses/draws
-    print("\033[1;31;40m Average Ghost score: {} \033[m".format(total_rounds * 1))
+    print("\033[1;31;40m Average Ghost score: {:.2f} \033[m".format(total_rounds * 4 / 3))
 
     # Final score = score from last round
     print("\033[1mFinal score: {}\033[0m".format(score))
